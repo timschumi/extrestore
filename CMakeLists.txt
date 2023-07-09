@@ -16,10 +16,11 @@ FetchContent_Declare(
 FetchContent_GetProperties(serenity)
 if(NOT serenity_POPULATED)
     FetchContent_Populate(serenity)
-    add_subdirectory("${serenity_SOURCE_DIR}/Meta/Lagom" "${serenity_BINARY_DIR}" EXCLUDE_FROM_ALL)
-    include_directories("${serenity_SOURCE_DIR}")
-    include_directories("${serenity_SOURCE_DIR}/Userland/Libraries")
 endif()
+
+add_subdirectory("${serenity_SOURCE_DIR}/Meta/Lagom" "${serenity_BINARY_DIR}" EXCLUDE_FROM_ALL)
+include_directories("${serenity_SOURCE_DIR}")
+include_directories("${serenity_SOURCE_DIR}/Userland/Libraries")
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 
