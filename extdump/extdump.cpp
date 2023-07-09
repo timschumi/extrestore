@@ -6,7 +6,7 @@
 
 #include <LibCore/ArgsParser.h>
 #include <LibCore/File.h>
-#include <LibExt4/Superblock.h>
+#include <LibExt4/Filesystem.h>
 
 ErrorOr<int> serenity_main(Main::Arguments arguments)
 {
@@ -18,17 +18,8 @@ ErrorOr<int> serenity_main(Main::Arguments arguments)
 
     auto file = TRY(Core::File::open(filename, Core::File::OpenMode::Read));
 
-    // ext4 keeps the first 1024 bytes empty to allow for x86 boot sectors and other things. The superblock doesn't start until after that.
-    constexpr size_t ext4_group_zero_padding = 1024;
-
-    if (TRY(file->size()) < ext4_group_zero_padding + sizeof(Ext4::Superblock))
-        return Error::from_string_view("File does not contain enough data for a full superblock"sv);
-
-    // Discard the empty space and read the superblock.
-    TRY(file->discard(ext4_group_zero_padding));
-    auto superblock = TRY(file->read_value<Ext4::Superblock>());
-
-    TRY(superblock.validate());
+    auto filesystem = TRY(Ext4::Filesystem::create(move(file)));
+    auto const& superblock = filesystem->superblock();
 
     auto compatible_feature_set = superblock.compatible_feature_set();
     auto incompatible_feature_set = superblock.incompatible_feature_set();
