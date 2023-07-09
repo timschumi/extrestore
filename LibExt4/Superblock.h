@@ -141,7 +141,6 @@ private:
     static constexpr size_t JOURNAL_BLOCKS_SIZE = 17;
     static constexpr size_t ERROR_FUNCTION_NAME_SIZE = 32;
     static constexpr size_t MOUNT_OPTIONS_STRING_SIZE = 64;
-    static constexpr size_t SUPERBLOCK_BACKUP_COUNT = 2;
     static constexpr size_t ENCRYPTION_ALGORITHM_COUNT = 4;
     static constexpr size_t ENCRYPTION_PASSWORD_SALT_SIZE = 16;
 
@@ -554,13 +553,12 @@ public:
         return m_overhead_blocks;
     }
 
-    [[nodiscard]] Array<u32, SUPERBLOCK_BACKUP_COUNT> superblock_backup_groups() const
+    [[nodiscard]] Array<u32, 2> superblock_backup_groups() const
     {
         VERIFY(has_flag(compatible_feature_set(), Ext4::CompatibleFeatureSet::SparseSuperBlockV2));
-        static_assert(SUPERBLOCK_BACKUP_COUNT == 2);
         return {
-            m_superblock_backup_groups[0],
-            m_superblock_backup_groups[1],
+            m_superblock_backup_group_1,
+            m_superblock_backup_group_2,
         };
     }
 
@@ -647,14 +645,14 @@ private:
     LittleEndian<u32> m_journal_inode_number;
     LittleEndian<u32> m_journal_device_number;
     LittleEndian<u32> m_last_orphan;
-    Array<LittleEndian<u32>, 4> m_hash_seed;
+    LittleEndian<u32> m_hash_seed[4];
     u8 m_default_directory_hash_algorithm;
     u8 m_journal_backup_type;
     LittleEndian<u16> m_group_descriptor_size;
     LittleEndian<u32> m_default_mount_options;
     LittleEndian<u32> m_first_meta_block_group;
     LittleEndian<u32> m_creation_time;
-    Array<LittleEndian<u32>, JOURNAL_BLOCKS_SIZE> m_journal_blocks;
+    LittleEndian<u32> m_journal_blocks[JOURNAL_BLOCKS_SIZE];
     LittleEndian<u32> m_block_count_high;
     LittleEndian<u32> m_reserved_block_count_high;
     LittleEndian<u32> m_free_block_count_high;
@@ -688,7 +686,8 @@ private:
     LittleEndian<u32> m_user_quota_inode_number;
     LittleEndian<u32> m_group_quota_inode_number;
     LittleEndian<u32> m_overhead_blocks;
-    Array<LittleEndian<u32>, SUPERBLOCK_BACKUP_COUNT> m_superblock_backup_groups;
+    LittleEndian<u32> m_superblock_backup_group_1;
+    LittleEndian<u32> m_superblock_backup_group_2;
     Array<u8, ENCRYPTION_ALGORITHM_COUNT> m_encryption_algorithms;
     Array<u8, ENCRYPTION_PASSWORD_SALT_SIZE> m_encryption_password_salt;
     LittleEndian<u32> m_lost_and_found_inode_number;
