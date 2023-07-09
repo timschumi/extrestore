@@ -19,7 +19,6 @@ ErrorOr<int> serenity_main(Main::Arguments arguments)
     auto file = TRY(Core::File::open(filename, Core::File::OpenMode::Read));
 
     // ext4 keeps the first 1024 bytes empty to allow for x86 boot sectors and other things. The superblock doesn't start until after that.
-    // TODO: Account for a possible block size of 1024, where the superblock ends up in block 1 instead. For all other cases this should be correct as-is.
     constexpr size_t ext4_group_zero_padding = 1024;
 
     if (TRY(file->size()) < ext4_group_zero_padding + sizeof(Ext4::Superblock))
