@@ -18,6 +18,8 @@ if(NOT serenity_POPULATED)
     FetchContent_Populate(serenity)
 endif()
 
+include("${serenity_SOURCE_DIR}/Meta/CMake/lagom_compile_options.cmake")
+
 add_subdirectory("${serenity_SOURCE_DIR}/Meta/Lagom" "${serenity_BINARY_DIR}" EXCLUDE_FROM_ALL)
 include_directories("${serenity_SOURCE_DIR}")
 include_directories("${serenity_SOURCE_DIR}/Userland/Libraries")
