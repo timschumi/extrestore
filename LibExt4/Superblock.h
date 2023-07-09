@@ -12,7 +12,7 @@
 
 namespace Ext4 {
 
-// https://ext4.wiki.kernel.org/index.php/Ext4_Disk_Layout#The_Super_Block
+// https://www.kernel.org/doc/html/latest/filesystems/ext4/globals.html#super-block
 
 enum class FileSystemState : u16 {
     CleanlyUnmounted = 0x0001,
